@@ -1,28 +1,34 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+directive @goField(
+  forceResolver: Boolean
+  name: String
+) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
+directive @auth on FIELD_DEFINITION
+
+scalar Any
 
 type User {
   id: ID!
   name: String!
+  email: String!
+}
+
+input NewUser {
+  name: String!
+  email: String!
+  password: String!
+}
+
+type AuthOps {
+  login(email: String!, password: String!): Any! @goField(forceResolver: true)
+  register(input: NewUser!): Any! @goField(forceResolver: true)
 }
 
 type Query {
-  todos: [Todo!]!
-}
-
-input NewTodo {
-  text: String!
-  userId: String!
+  user(id: ID!): User! @goField(forceResolver: true) @auth
+  protected: String! @goField(forceResolver: true) @auth
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  auth: AuthOps! @goField(forceResolver: true)
 }
