@@ -4,6 +4,7 @@ import (
 	"context"
 	"first-hackathon/db"
 	"first-hackathon/graph/model"
+	"first-hackathon/middlewares"
 	"first-hackathon/utils"
 	"strings"
 
@@ -36,6 +37,25 @@ func UserGetByID(ctx context.Context, id string) (*model.User, error) {
 	}
 
 	return &user, nil
+}
+
+func UserGetMe(ctx context.Context) (*model.User, error) {
+	var user model.User
+	uid := middlewares.CtxValue(ctx).ID
+	if err := db.Psql.Model(user).Where("id = ?", uid).Take(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func GetAllUser(ctx context.Context) ([]*model.User, error) {
+	var users []*model.User
+	if err := db.Psql.Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func UserGetByEmail(ctx context.Context, email string) (*model.User, error) {
