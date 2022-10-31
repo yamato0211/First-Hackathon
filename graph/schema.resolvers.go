@@ -30,6 +30,16 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 	return cruds.UserGetByID(ctx, id)
 }
 
+// Users is the resolver for the users field.
+func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	return cruds.GetAllUser(ctx)
+}
+
+// Me is the resolver for the me field.
+func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
+	return cruds.UserGetMe(ctx)
+}
+
 // Protected is the resolver for the protected field.
 func (r *queryResolver) Protected(ctx context.Context) (string, error) {
 	return "Success", nil
